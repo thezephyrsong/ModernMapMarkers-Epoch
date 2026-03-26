@@ -39,6 +39,7 @@ Drakensangs
 <img width="1550" height="1030" alt="Untitled8" src="https://github.com/user-attachments/assets/0c0292f2-f335-455e-9e7a-84431b52bf61" />
 <img width="1544" height="908" alt="Untitled1" src="https://github.com/user-attachments/assets/8c0a9855-b148-4b74-912a-adece32c0ef7" />
 <img width="1547" height="911" alt="Untitled2" src="https://github.com/user-attachments/assets/922b7519-cbef-48eb-8e08-9c3b43d82e34" />
+<img width="504" height="647" alt="Untitled5" src="https://github.com/user-attachments/assets/66ab789c-8d60-40f6-9ef5-59fa0b7cfe20" />
 
 ## 📸 **WDM map markers**
 
