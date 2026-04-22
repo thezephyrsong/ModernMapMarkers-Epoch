@@ -18,13 +18,13 @@ A lightweight addon that places markers on the world map for dungeons, raids, wo
 
  Type /mmm hints to enable/disable transport marker click hints.
 
-## BUG REPORTING**
+## **BUG REPORTING**
 
  Please feel free to open new issue or make a PR and it will be looked at.
 
 ## 👨‍💻 **Credits for 3.3.5**
 
- Authir: Drakensangs
+ Author: Drakensangs
 
 ## 👨‍💻 **Credits for [MMM 1.12](https://github.com/tilare/ModernMapMarkers)**
 
