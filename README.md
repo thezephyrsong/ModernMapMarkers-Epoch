@@ -32,14 +32,9 @@ A lightweight addon that places markers on the world map for dungeons, raids, wo
 
 ## 📸 **Screenshots**
 
-<img width="314" height="147" alt="Untitled7" src="https://github.com/user-attachments/assets/de2497be-9a7e-40a4-99da-96bd28759939" />\
-<img width="406" height="535" alt="Untitled3" src="https://github.com/user-attachments/assets/75b34566-2f5e-434d-8d29-5f2d93fd96bb" />
-<img width="219" height="460" alt="Untitled4" src="https://github.com/user-attachments/assets/8e5ae9de-67b1-4e7d-8a85-a21e803ec7c7" />
-<img width="729" height="338" alt="Untitled6" src="https://github.com/user-attachments/assets/43540a65-3f4e-49a9-8270-3a1365573f2e" />
-<img width="921" height="269" alt="Untitled6" src="https://github.com/user-attachments/assets/32d29d2a-4088-45ed-9aaa-5ea13ce05c49" />
-<img width="1273" height="863" alt="Untitled9" src="https://github.com/user-attachments/assets/972c6ade-bfc6-414a-8d37-18a089432d58" />
-<img width="1550" height="1030" alt="Untitled8" src="https://github.com/user-attachments/assets/0c0292f2-f335-455e-9e7a-84431b52bf61" />
-<img width="1544" height="908" alt="Untitled1" src="https://github.com/user-attachments/assets/8c0a9855-b148-4b74-912a-adece32c0ef7" />
-<img width="1547" height="911" alt="Untitled2" src="https://github.com/user-attachments/assets/922b7519-cbef-48eb-8e08-9c3b43d82e34" />
-<img width="504" height="647" alt="Untitled5" src="https://github.com/user-attachments/assets/66ab789c-8d60-40f6-9ef5-59fa0b7cfe20" />
+<img width="892" height="592" alt="{B50E5C91-DC94-4FFC-8848-FBE5E7517322}" src="https://github.com/user-attachments/assets/023d97c0-69bd-432f-b86e-95d5c37b8715" />
+
+<img width="491" height="689" alt="{6EFC66B8-7777-4F03-B385-4D018A4780A0}" src="https://github.com/user-attachments/assets/38147fa6-2214-4f30-bf37-2a7498aeaee0" />
+
+
 
