@@ -1,4 +1,4 @@
-# 🗺️ **ModernMapMarkers** (WotLK 3.3.5a)
+# 🗺️ **ModernMapMarkers** (Project Epoch)
 
 A lightweight addon that places markers on the world map for dungeons, raids, world bosses, boats, zeppelins, trams & portals.
 
@@ -10,23 +10,25 @@ A lightweight addon that places markers on the world map for dungeons, raids, wo
 
  Transport navigation. click any transport marker (boat, zeppelin, tram, portal) to instantly change the map to its destination. Dual destination markers show a left/right click hint for each route. Markers with three or more destinations show a dropdown menu listing all destinations.
  
- **Atlas** & **AtlasQuest** support. Click any dungeon, raid and world boss markers to open up the coresponding Atlas page.
+ **[Atlas](https://github.com/Raynbock/Atlas-Project-Epoch)** & **[AtlasQuest](https://github.com/Rofos2011/AtlasQuest)** for Project Epoch support. Click any dungeon, raid and world boss markers to open up the corresponding Atlas page.
 
  **ElvUI** support. Filter Marker & Find Marker menus are skinned to match ElvUI.
-
- [**WDM-addons**](https://github.com/Trimitor/WDM-addons) & [**WDM-patch**](https://github.com/Trimitor/WDM-patch) support. ModernMapMarkers will switch to a different set of marker coordinates compatible with WDM when the addon is detected. New dungeon & raid markers will also be added to the maps introduced by the Caverns and Mines Map patch.
  
  Type /mmm to enable/disable the world map dropdown menus.
 
  Type /mmm hints to enable/disable transport marker click hints.
 
-## 👨‍💻 **Authors**
+## BUG REPORTING**
 
-Drakensangs
+ Please feel free to open new issue or make a PR and it will be looked at.
 
-## 🎥 **Video Demonstration:**
+## 👨‍💻 **Credits for 3.3.5**
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Ga0yEeGzYq4/0.jpg)](https://www.youtube.com/watch?v=Ga0yEeGzYq4)
+ Authir: Drakensangs
+
+## 👨‍💻 **Credits for [MMM 1.12](https://github.com/tilare/ModernMapMarkers)**
+
+ Authors: tilare & Heallios
 
 ## 📸 **Screenshots**
 
@@ -40,9 +42,4 @@ Drakensangs
 <img width="1544" height="908" alt="Untitled1" src="https://github.com/user-attachments/assets/8c0a9855-b148-4b74-912a-adece32c0ef7" />
 <img width="1547" height="911" alt="Untitled2" src="https://github.com/user-attachments/assets/922b7519-cbef-48eb-8e08-9c3b43d82e34" />
 <img width="504" height="647" alt="Untitled5" src="https://github.com/user-attachments/assets/66ab789c-8d60-40f6-9ef5-59fa0b7cfe20" />
-
-## 📸 **WDM map markers**
-
-<img width="1621" height="1081" alt="Untitled8" src="https://github.com/user-attachments/assets/73a2a2a8-7129-4ff6-98b3-c84fe826f0c0" />
-<img width="1623" height="1077" alt="Untitled7" src="https://github.com/user-attachments/assets/33134cdd-a129-4f2e-bed1-d20edc1f79d1" />
 
