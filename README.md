@@ -18,6 +18,10 @@ A lightweight addon that places markers on the world map for dungeons, raids, wo
 
  Type /mmm hints to enable/disable transport marker click hints.
 
+## **Installation**
+
+Download as ZIP, extract to Interface\Addons and rename the folder to **ModernMapMarkers**.
+
 ## **BUG REPORTING**
 
  Please feel free to open new issue or make a PR and it will be looked at.
