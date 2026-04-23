@@ -976,10 +976,47 @@ end
 
 local function PrimeAtlasSilently()
     if not Atlas_Refresh or not AtlasOptions then return end
+    if not ATLAS_DROPDOWNS then return end
     WithContinentSort(function()
-        AtlasOptions.AtlasType = 4
-        AtlasOptions.AtlasZone = 15
+        -- Clamp AtlasType/AtlasZone to a position that actually exists
+        -- before calling Atlas_Refresh. PE's Atlas fork omits many
+        -- vanilla maps and has fewer dropdown types than stock (often
+        -- just EK=1, Kalimdor=2, OutdoorRaids=3 under SortBy=1), so
+        -- stale hardcoded values like (4, 15) made AtlasLoot's hooked
+        -- Atlas_Refresh crash on pairs(ATLAS_DROPDOWNS[4]) == pairs(nil).
+        local savedType = AtlasOptions.AtlasType
+        local savedZone = AtlasOptions.AtlasZone
+
+        local t = AtlasOptions.AtlasType
+        if type(t) ~= "number" or type(ATLAS_DROPDOWNS[t]) ~= "table" then
+            AtlasOptions.AtlasType = 1
+            t = 1
+        end
+        local z = AtlasOptions.AtlasZone
+        if type(z) ~= "number" or ATLAS_DROPDOWNS[t] == nil
+           or ATLAS_DROPDOWNS[t][z] == nil then
+            AtlasOptions.AtlasZone = 1
+        end
+        -- If even (1,1) is missing (shouldn't happen in practice), bail.
+        if ATLAS_DROPDOWNS[AtlasOptions.AtlasType] == nil
+           or ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone] == nil then
+            AtlasOptions.AtlasType = savedType
+            AtlasOptions.AtlasZone = savedZone
+            return
+        end
         Atlas_Refresh()
+
+        -- Restore the user's last-viewed Atlas page if it pointed at a
+        -- live entry. WithContinentSort already does this when a sort
+        -- switch happened, but its same-sort fast path does not; doing
+        -- it here covers both. ParkAtlasOnZone handles the case where
+        -- the user's sort mode has since changed.
+        if savedType and savedZone
+           and ATLAS_DROPDOWNS[savedType]
+           and ATLAS_DROPDOWNS[savedType][savedZone] ~= nil then
+            AtlasOptions.AtlasType = savedType
+            AtlasOptions.AtlasZone = savedZone
+        end
     end)
 end
 
