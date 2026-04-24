@@ -28,12 +28,19 @@ local TEXTURES = {
     tram      = "Interface\\Addons\\ModernMapMarkers\\Textures\\tram.tga",
     portal    = "Interface\\Addons\\ModernMapMarkers\\Textures\\portal.tga",
     pvp       = "Interface\\Addons\\ModernMapMarkers\\Textures\\pvp.tga",
+    flightpath = "Interface\\TaxiFrame\\UI-Taxi-Icon-Highlight",
 }
 
 local WORLD_BOSS_MAP = {
-    ["Doom Lord Kazzak"] = "WorldBossesBC",
-    ["Doomwalker"]       = "WorldBossesBC",
-}
+	["Azuregos"]            = "Azuregos",
+   	["Corrupted Ancient"]   = "Corruptedancient",
+    	["Gonzor"]              = "Gonzor",
+    	["King Gnok"]           = "Kinggnok",
+    	["King Mosh"]           = "KingMosh",
+    	["Silithid Lurker"]     = "Silithidlurker",
+    	["Volchan"]             = "Volchan",
+    	["Lord Kazzak"]         = "LordKazzak",
+    	["Winterspring Boss"]   = "WinterspringBoss",}
 
 local ATLAS_OUTDOOR_INDEX = {
     ["Azuregos"]                            = 1,
@@ -80,6 +87,10 @@ local ZONE_TO_CONTINENT = {
     Stranglethorn       = 2, SwampOfSorrows = 2, Tirisfal      = 2,
     Undercity           = 2, WesternPlaguelands = 2, Westfall   = 2,
     Wetlands            = 2,
+    -- Project Epoch custom zones
+    -- TODO: replace "TolBarad" with the exact string returned by GetMapInfo()
+    -- while standing in Tol Barad. Run: /script print(GetMapInfo())
+    TolBarad            = 2,
 }
 
 -- ============================================================
@@ -130,6 +141,17 @@ end
 -- zone on continents 1 and 2 via SetMapZoom + GetMapInfo. Must be called
 -- once; guarded by zoneNavBuilt. Sets buildingZoneNav so UpdateMarkers
 -- suppresses redraws triggered by the SetMapZoom side-effects.
+-- Zones not discoverable via GetMapZones (Project Epoch custom content
+-- that has no vanilla continent/zone index). Add entries here as PE
+-- expands. Each entry maps an internal zone name to {continent, zoneIdx}.
+--
+-- TODO: replace the placeholder indices {2, 999} with real values from:
+--   /script print(GetCurrentMapContinent(), GetCurrentMapZone())
+--   (run while standing in Tol Barad with the world map open on that zone)
+local ZONE_NAV_OVERRIDES = {
+    TolBarad = {2, 22},  -- TODO: fill in real continent+zone index
+}
+
 local function BuildZoneNav()
     if zoneNavBuilt then return end
     buildingZoneNav = true
@@ -154,6 +176,13 @@ local function BuildZoneNav()
             SetMapZoom(savedC, savedZ)
         else
             SetMapZoom(savedC)
+        end
+    end
+
+    -- Merge PE custom zones that GetMapZones won't discover.
+    for name, coords in pairs(ZONE_NAV_OVERRIDES) do
+        if not zoneNameToMap[name] then
+            zoneNameToMap[name] = coords
         end
     end
 
@@ -227,7 +256,7 @@ end
 function MMM.GetFlatData()
     if flatDataCache then return flatDataCache end
     local result = {}
-    local skip = {boat=true, zepp=true, tram=true, portal=true}
+    local skip = {boat=true, zepp=true, tram=true, portal=true, pvp=true, flightpath=true}
     for i = 1, #MMM_DefaultPoints do
         local p    = MMM_DefaultPoints[i]
         local kind = p[5]
@@ -411,58 +440,48 @@ local function IsWorldMapFullscreen()
 end
 
 local function OnWorldBossClick()
-    if not AtlasLoot_ShowBossLoot or not AtlasFrame or not Atlas_Refresh then
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000AtlasLoot not loaded.|r")
-        return
-    end
-    local bossName    = this.markerName
-    local dataID      = WORLD_BOSS_MAP[bossName]
-    local atlasIndex  = ATLAS_OUTDOOR_INDEX[bossName]
-    local displayName = bossName
-
-    if this.isEmeraldDragon then
-        dataID, displayName = GetRandomNightmareDragon()
-        atlasIndex = 4
+    -- 1. Load the module
+    if not IsAddOnLoaded("AtlasLoot_WorldEvents") then
+        LoadAddOn("AtlasLoot_WorldEvents")
     end
 
-    if dataID and atlasIndex then
-        PlaySoundFile(SOUND_CLICK)
-        if WorldMapFrame:IsVisible() and IsWorldMapFullscreen() then
-            HideUIPanel(WorldMapFrame)
+    -- 2. Force the World Map to close
+    if WorldMapFrame:IsVisible() then
+        WorldMapFrame:Hide()
+    end
+
+    local bossName = this.markerName
+    local atlasID  = this.atlasID or (WORLD_BOSS_MAP and WORLD_BOSS_MAP[bossName])
+
+    if atlasID and AtlasLoot_ShowBossLoot then
+        -- 3. Show the Standalone Frame first
+        if AtlasLootDefaultFrame then
+            AtlasLootDefaultFrame:Show()
         end
-        WithContinentSort(function()
-            if AtlasFrame and AtlasOptions then
-                AtlasOptions.AtlasType = 7   -- Outdoor Encounters
-                AtlasOptions.AtlasZone = atlasIndex
-                local savedAutoSelect = AtlasOptions.AtlasAutoSelect
-                AtlasOptions.AtlasAutoSelect = false
-                Atlas_Refresh()
-                AtlasFrame:SetFrameStrata("FULLSCREEN")
-                AtlasFrame:Show()
-                AtlasOptions.AtlasAutoSelect = savedAutoSelect
-                -- Remember this page for HookAtlasToggle (manual re-opens).
-                mmmAtlasType = 7
-                mmmAtlasZone = atlasIndex
-                mmmZoneID = ATLAS_DROPDOWNS[7] and ATLAS_DROPDOWNS[7][atlasIndex]
-            end
-        end)
-        -- Capture into locals so the closure doesn't capture 'this'.
-        local boss_dataID      = dataID
-        local boss_displayName = displayName
-        local delayFrame       = CreateFrame("Frame")
-        delayFrame.timer       = 0
-        delayFrame:SetScript("OnUpdate", function()
-            this.timer = this.timer + arg1
-            if this.timer >= 0.1 then
-                this:SetScript("OnUpdate", nil)
-                local ok = pcall(AtlasLoot_ShowBossLoot, boss_dataID, boss_displayName, AtlasFrame)
-                if not ok then
-                    DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000Error loading AtlasLoot data.|r")
-                end
-            end
-        end)
-    else
-        DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000No Atlas data found for \"" .. bossName .. "\".|r")
+
+        -- 4. Define the internal Epoch Standalone Anchor table
+        -- This table tells AtlasLoot to snap the loot list into the 
+        -- background area of the standalone browser window.
+        local epochStandaloneAnchor = { 
+            "TOPLEFT", 
+            "AtlasLootDefaultFrame_LootBackground", 
+            "TOPLEFT", 
+            2, 
+            -2 
+        }
+
+        -- 5. Clear highlights and call the API with the anchor table
+        if AtlasLootItemsFrame then
+            AtlasLootItemsFrame.refresh = { nil, nil, nil, nil }
+        end
+
+        local ok, err = pcall(AtlasLoot_ShowBossLoot, atlasID, bossName, epochStandaloneAnchor)
+        
+        if ok then
+            PlaySoundFile(SOUND_CLICK)
+        else
+            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000MMM Hook Error:|r " .. tostring(err))
+        end
     end
 end
 
@@ -499,39 +518,44 @@ local function ResolveAtlasID(atlasID, continent)
 end
 
 local function OnAtlasClick()
-    if not (this.atlasID and AtlasFrame and AtlasOptions) then return end
-    PlaySoundFile(SOUND_CLICK)
-    local atlasID = this.atlasID
-    local continent = GetCurrentMapContinent()
-    if WorldMapFrame:IsVisible() and IsWorldMapFullscreen() then
-        HideUIPanel(WorldMapFrame)
+    -- 1. FORCE LOAD DATA FIRST
+    if not IsAddOnLoaded("AtlasLoot_OriginalWoW") then
+        LoadAddOn("AtlasLoot_OriginalWoW")
     end
-    WithContinentSort(function()
-        -- Resolve inside the closure: WithContinentSort repopulates
-        -- ATLAS_DROPDOWNS before calling us, so the search hits the
-        -- SortBy=1 layout regardless of the user's saved sort mode.
-        local atlasType, atlasZone = ResolveAtlasID(atlasID, continent)
-        if not atlasType then
-            DEFAULT_CHAT_FRAME:AddMessage(
-                "|cFFFF0000MMM: Atlas map \""
-                .. tostring(atlasID)
-                .. "\" not available in this Atlas build.|r")
-            return
+
+    if not this.atlasID then return end
+    local atlasID = this.atlasID
+    local bossName = this.markerName or ""
+
+    -- Close World Map
+    if WorldMapFrame:IsVisible() then WorldMapFrame:Hide() end
+
+    -- CASE A: User has the core Atlas map addon installed
+    if AtlasFrame and AtlasOptions and Atlas_Refresh then
+        PlaySoundFile(SOUND_CLICK)
+        WithContinentSort(function()
+            local atlasType, atlasZone = ResolveAtlasID(atlasID, GetCurrentMapContinent())
+            if atlasType then
+                AtlasOptions.AtlasType = atlasType
+                AtlasOptions.AtlasZone = atlasZone
+                Atlas_Refresh()
+                AtlasFrame:Show()
+            end
+        end)
+
+    -- CASE B: Standalone User (Project Epoch AtlasLoot only)
+    elseif AtlasLoot_ShowBossLoot then
+        PlaySoundFile(SOUND_CLICK)
+        if AtlasLootDefaultFrame then AtlasLootDefaultFrame:Show() end
+
+        local epochStandaloneAnchor = { "TOPLEFT", "AtlasLootDefaultFrame_LootBackground", "TOPLEFT", 2, -2 }
+
+        if AtlasLootItemsFrame then
+            AtlasLootItemsFrame.refresh = { nil, nil, nil, nil }
         end
-        AtlasOptions.AtlasType = atlasType
-        AtlasOptions.AtlasZone = atlasZone
-        Atlas_Refresh()
-        AtlasFrame:SetFrameStrata("FULLSCREEN")
-        local savedAutoSelect = AtlasOptions.AtlasAutoSelect
-        AtlasOptions.AtlasAutoSelect = false
-        AtlasFrame:Show()
-        AtlasOptions.AtlasAutoSelect = savedAutoSelect
-        -- Remember this page for HookAtlasToggle (manual re-opens).
-        mmmAtlasType = atlasType
-        mmmAtlasZone = atlasZone
-        mmmZoneID = ATLAS_DROPDOWNS[atlasType] and ATLAS_DROPDOWNS[atlasType][atlasZone]
-    end)
-    if AtlasQuestFrame then AtlasQuestFrame:Show() end
+
+        pcall(AtlasLoot_ShowBossLoot, atlasID, bossName, epochStandaloneAnchor)
+    end
 end
 
 local function StartPinHighlight(pin)
@@ -737,7 +761,8 @@ local function CreateMapPin(x, y, size, texture, tooltipText, tooltipInfo, atlas
         if this.markerKind == "worldboss" then
             OnWorldBossClick()
         elseif this.markerKind == "boat" or this.markerKind == "zepp"
-            or this.markerKind == "tram" or this.markerKind == "portal" then
+            or this.markerKind == "tram" or this.markerKind == "portal"
+            or this.markerKind == "flightpath" then
             OnTransportClick()
         elseif this.atlasID then
             OnAtlasClick()
@@ -828,6 +853,7 @@ local function UpdateMarkers()
     local showTrams        = db.showTrams
     local showPortals      = db.showPortals
     local showPvP          = db.showPvP
+    local showFlightPaths  = db.showFlightPaths
     local transportFaction = db.transportFaction
     local portalFaction    = db.portalFaction
 
@@ -837,8 +863,9 @@ local function UpdateMarkers()
     local texZepp      = TEXTURES.zepp
     local texBoat      = TEXTURES.boat
     local texTram      = TEXTURES.tram
-    local texPortal    = TEXTURES.portal
-    local texPvp       = TEXTURES.pvp
+    local texPortal      = TEXTURES.portal
+    local texPvp         = TEXTURES.pvp
+    local texFlightPath  = TEXTURES.flightpath
 
     -- Entry fields (flat format):
     --   [1]=zoneName [2]=x [3]=y [4]=name [5]=kind [6]=info [7]=atlasID [8]=slot8
@@ -889,10 +916,17 @@ local function UpdateMarkers()
                 shouldDisplay = (info == transportFaction) or (info == "Neutral")
             end
             texture = texPvp
+        elseif kind == "flightpath" then
+            shouldDisplay = showFlightPaths
+            if shouldDisplay and transportFaction ~= "all" then
+                shouldDisplay = (info == transportFaction) or (info == "Neutral")
+            end
+            texture = texFlightPath
         end
 
         if shouldDisplay then
-            local size = (kind == "boat" or kind == "zepp" or kind == "tram" or kind == "portal" or kind == "pvp")
+            local size = (kind == "boat" or kind == "zepp" or kind == "tram"
+                or kind == "portal" or kind == "pvp" or kind == "flightpath")
                 and MARKER_SIZE_SMALL or MARKER_SIZE_LARGE
             local pin = CreateMapPin(
                 data[2] * mapWidth, data[3] * mapHeight,
@@ -967,6 +1001,7 @@ local DEFAULTS = {
     showTrams          = true,
     showPortals        = true,
     showPvP            = true,
+    showFlightPaths    = true,
     transportFaction   = "all",
     portalFaction      = "all",
     showTransportHints = true,
