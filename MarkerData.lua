@@ -196,9 +196,9 @@ MMM_DefaultPoints = {
 
     -- Winds), not on the WotLK platform NW of the city in Durotar.
 
-    {"Ogrimmar", 0.90, 0.527, "Zeppelin to Tirisfal Glades", "zepp", "Horde", nil, "Tirisfal"},
+    {"Ogrimmar", 0.92, 0.48, "Zeppelin to Tirisfal Glades", "zepp", "Horde", nil, "Tirisfal"},
 
-    {"Ogrimmar", 0.83, 0.58, "Zeppelin to Grom'Gol", "zepp", "Horde", nil, "Stranglethorn"},
+    {"Ogrimmar", 0.825, 0.62, "Zeppelin to Grom'Gol", "zepp", "Horde", nil, "Stranglethorn"},
 
     {"Barrens", 0.636, 0.389, "Boat to Booty Bay", "boat", "Neutral", nil, "Stranglethorn"},
 
