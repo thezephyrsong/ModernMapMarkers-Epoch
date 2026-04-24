@@ -116,8 +116,8 @@ MMM_DefaultPoints = {
     -- Eastern Kingdoms
     -- -------------------------------------------------------------------------
     -- Dungeons
-    	{"Arathi", 0.312, 0.819, "Tol Barad (Flight Path)", "flightpath", "57-60", nil, "dropdown"},
-	{"TolBarad", 0.326, 0.576, "Faldir Cove (Flight Path)", "flightpath", "57-60", nil, "dropdown"},
+    {"Arathi", 0.312, 0.819, "Tol Barad (Flight Path)", "flightpath", "57-60", nil, "TolBarad"},
+	{"TolBarad", 0.326, 0.576, "Faldir Cove (Flight Path)", "flightpath", "57-60", nil, "Arathi"},
 	{"TolBarad", 0.483, 0.491, "Baradin Hold", "dungeon", "57-60", "BaradinHold", "dropdown"},
     {"SearingGorge", 0.387, 0.833, "Blackrock Depths\n|cFF808080(Searing Gorge)|r", "dungeon", "52-60", "BlackrockDepths", "dropdown"},
     {"BurningSteppes", 0.328, 0.365, "Blackrock Depths\n|cFF808080(Burning Steppes)|r", "dungeon", "52-60", "BlackrockDepths", "dropdown"},
