@@ -397,7 +397,16 @@ local function DrawFindRows()
                     row.hlTex:SetAllPoints(row)
                 end
             else
-                local parent = findDisplayList[slotIdx - 1]
+                -- Walk backward in findDisplayList to find the nearest "name"
+                -- slot. This is safe regardless of scroll offset and would
+                -- survive consecutive comment rows.
+                local parent
+                for pi = slotIdx - 1, 1, -1 do
+                    if findDisplayList[pi].kind == "name" then
+                        parent = findDisplayList[pi]
+                        break
+                    end
+                end
                 row:EnableMouse(true)
                 row.nameText:SetText(slot.text)
                 row.nameText:SetTextColor(0.55, 0.55, 0.55)
@@ -405,9 +414,14 @@ local function DrawFindRows()
                 row.rowWidth = rw
                 row.nameText:SetWidth(rw - 8)
                 row.lvlText:SetText("")
-                row.dataZoneName = parent.zoneName
-                row.dataName     = parent.dataName
-                row.nameRow      = findRowButtons[i - 1]
+                if parent then
+                    row.dataZoneName = parent.zoneName
+                    row.dataName     = parent.dataName
+                else
+                    row.dataZoneName = nil
+                    row.dataName     = nil
+                end
+                row.nameRow = findRowButtons[i - 1]
             end
             row:Show()
         else
@@ -709,36 +723,54 @@ local function ElvUI_SkinPanel()
     elvuiSkinPanelDone = true
 end
 
+
 -- ============================================================
 -- Dropdowns
 -- ============================================================
 
 local function PositionDropdowns()
     if not MMMFilterDropdown then return end
-
-    -- Magnify minimode: WorldMap_ToggleSizeDown sets WORLDMAP_SETTINGS.size to
-    -- WORLDMAP_WINDOWED_SIZE. In that state WorldMapPositioningGuide is not a
-    -- reliable anchor, so pin the dropdowns just below the close button instead.
-    local isMinimode = WORLDMAP_SETTINGS
-                       and WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE
-
     local hasMapster        = IsAddOnLoaded("Mapster")
     local hasQuestie        = IsAddOnLoaded("Questie-335")
     local hasWDM            = IsAddOnLoaded("WDM")
-    local hasPfQuest        = (IsAddOnLoaded("pfQuest") or IsAddOnLoaded("pfQuest-wotlk")) and pfQuestMapDropdown ~= nil
     local hasElvUI          = elvuiS ~= nil
-    local hasElvUISmallerMap = hasElvUI and elvuiE.global and elvuiE.global.general and elvuiE.global.general.smallerWorldMap
+    local hasElvUISmallerMap = hasElvUI
+                               and elvuiE.global
+                               and elvuiE.global.general
+                               and elvuiE.global.general.smallerWorldMap
+	local hasPfQuest        = (IsAddOnLoaded("pfQuest") or IsAddOnLoaded("pfQuest-wotlk")) and pfQuestMapDropdown ~= nil						   
+    local windowed          = WORLDMAP_SETTINGS and WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE
+    -- When pfQuest is loaded, measure its dropdown's actual height so we can
+    -- nudge our WorldMapPositioningGuide offset downward by the right amount.
+    -- We deliberately do NOT anchor to pfQuestMapDropdown itself: that frame
+    -- is a child of WorldMapFrame but Magnify rescales WorldMapScrollFrame
+    -- (a sibling) independently, so a cross-frame anchor produces incorrect
+    -- screen positions after a zoom. Using WorldMapPositioningGuide for both
+    -- pfQuest and MMM keeps everything in the same coordinate space.
+    local pfQuestOffset = 0
+    if hasPfQuest then
+        pfQuestOffset = pfQuestMapDropdown:GetHeight() or 28
+    end
+
     MMMFilterDropdown:ClearAllPoints()
-    if isMinimode then
-        -- Anchor to the close button which exists and is correctly placed in
-        -- both fullscreen and windowed (minimode) map frames.
-        MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapFrameCloseButton, "BOTTOMLEFT", 18, -8)
-    elseif hasPfQuest then
-        -- pfQuest places pfQuestMapDropdown at TOPRIGHT of WorldMapButton.
-        -- Stack MMM directly below it so they form a clean column.
-        MMMFilterDropdown:SetPoint("TOPRIGHT", pfQuestMapDropdown, "BOTTOMRIGHT", 0, 0)
+    if windowed then
+        MMMFilterDropdown:SetScale(0.8)
+        MMMFindDropdown:SetScale(0.8)
+        if findPanel then findPanel:SetScale(0.8) end
+        if hasPfQuest then
+            MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -19, -55 - pfQuestOffset)
+        elseif hasQuestie or hasWDM then
+            MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -19, -99)
+        else
+            MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -19, -55)
+        end
     elseif hasElvUISmallerMap then
-        if (hasMapster and hasQuestie) or hasWDM then
+        MMMFilterDropdown:SetScale(1)
+        MMMFindDropdown:SetScale(1)
+        if findPanel then findPanel:SetScale(1) end
+        if hasPfQuest then
+            MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapFrameCloseButton, "BOTTOMLEFT", 18, -50 - pfQuestOffset)
+        elseif (hasMapster and hasQuestie) or hasWDM then
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapFrameCloseButton, "BOTTOMLEFT", 18, -79)
         elseif hasMapster then
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapFrameCloseButton, "BOTTOMLEFT", 18, -50)
@@ -748,7 +780,12 @@ local function PositionDropdowns()
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapFrameCloseButton, "BOTTOMLEFT", 18, -50)
         end
     elseif hasElvUI then
-        if (hasMapster and hasQuestie) or hasWDM then
+        MMMFilterDropdown:SetScale(1)
+        MMMFindDropdown:SetScale(1)
+        if findPanel then findPanel:SetScale(1) end
+        if hasPfQuest then
+            MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -18, -79 - pfQuestOffset)
+        elseif (hasMapster and hasQuestie) or hasWDM then
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -18, -111)
         elseif hasMapster then
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", -18, -79)
@@ -758,7 +795,12 @@ local function PositionDropdowns()
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapFrame, "TOPRIGHT", -188, -79)
         end
     else
-        if (hasMapster and hasQuestie) or hasWDM then
+        MMMFilterDropdown:SetScale(1)
+        MMMFindDropdown:SetScale(1)
+        if findPanel then findPanel:SetScale(1) end
+        if hasPfQuest then
+            MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", 2, -79 - pfQuestOffset)
+        elseif (hasMapster and hasQuestie) or hasWDM then
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", 2, -111)
         elseif hasMapster then
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", 2, -79)
@@ -770,24 +812,6 @@ local function PositionDropdowns()
     end
     MMMFindDropdown:ClearAllPoints()
     MMMFindDropdown:SetPoint("TOPRIGHT", MMMFilterDropdown, "BOTTOMRIGHT", 0, 0)
-
-    -- Re-anchor the find panel if it was already created, so the next
-    -- time it opens it uses the correct direction for the current mode.
-    if findPanel then
-        findPanel:Hide()  -- force closed on mode change; stale position is confusing
-        findPanel:ClearAllPoints()
-        if isMinimode then
-            findPanel:SetPoint("BOTTOMRIGHT", MMMFindDropdown, "TOPRIGHT", -16, 0)
-        else
-            findPanel:SetPoint("TOPRIGHT", MMMFindDropdown, "BOTTOMRIGHT", -16, 0)
-        end
-    end
-end
-
--- Public wrapper so Magnify (and any other addon) can re-position the
--- dropdowns after switching map modes without accessing the local upvalue.
-function MMM.PositionDropdowns()
-    PositionDropdowns()
 end
 
 -- Called once after ElvUI:Initialize() completes.
@@ -845,20 +869,13 @@ local function CreateDropdowns()
             if not findPanel then
                 CreateFindPanel(findDropdown)
                 ElvUI_SkinPanel()
+                if WORLDMAP_SETTINGS and WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE then
+                    findPanel:SetScale(0.8)
+                end
             end
             if findPanel:IsShown() then
                 findPanel:Hide()
             else
-                -- Re-anchor the panel each time it opens so minimode
-                -- (smaller frame, no room below) opens upward instead.
-                findPanel:ClearAllPoints()
-                local isMini = WORLDMAP_SETTINGS
-                               and WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE
-                if isMini then
-                    findPanel:SetPoint("BOTTOMRIGHT", MMMFindDropdown, "TOPRIGHT", -16, 0)
-                else
-                    findPanel:SetPoint("TOPRIGHT", MMMFindDropdown, "BOTTOMRIGHT", -16, 0)
-                end
                 -- Open on the player's current continent if valid (1-4).
                 local c = GetCurrentMapContinent()
                 if c >= 1 and c <= 4 then findActiveContinent = c end
@@ -940,14 +957,11 @@ local function InitDropdowns()
     ElvUI_Hook()
 end
 
--- Stock-UI fallback: re-position dropdowns when the user toggles map size
--- via Blizzard's built-in buttons. Magnify (and similar) call
--- MMM.PositionDropdowns() directly; this hook covers the no-Magnify case.
--- Idempotent with external callers.
-local _origToggleSizeUp   = WorldMap_ToggleSizeUp
-local _origToggleSizeDown = WorldMap_ToggleSizeDown
-WorldMap_ToggleSizeUp   = function(...) if _origToggleSizeUp   then _origToggleSizeUp(...)   end PositionDropdowns() end
-WorldMap_ToggleSizeDown = function(...) if _origToggleSizeDown then _origToggleSizeDown(...) end PositionDropdowns() end
+-- Exposed so external addons (e.g. Magnify) can call MMM.PositionDropdowns()
+-- from their own map-resize hooks. Without this export Magnify's hook was a
+-- silent no-op, leaving buttons stranded after a zoom when pfQuestMapDropdown
+-- (their anchor) had itself been repositioned by Magnify.
+MMM.PositionDropdowns = PositionDropdowns
 
 local uiFrame = CreateFrame("Frame")
 uiFrame:RegisterEvent("VARIABLES_LOADED")
