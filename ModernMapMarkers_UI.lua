@@ -722,7 +722,7 @@ local function PositionDropdowns()
     local hasMapster        = IsAddOnLoaded("Mapster")
     local hasQuestie        = IsAddOnLoaded("Questie-335")
     local hasWDM            = IsAddOnLoaded("WDM")
-    local hasPfQuest        = IsAddOnLoaded("pfQuest") and pfQuestMapDropdown ~= nil
+    local hasPfQuest        = (IsAddOnLoaded("pfQuest") or IsAddOnLoaded("pfQuest-wotlk")) and pfQuestMapDropdown ~= nil
     local hasElvUI          = elvuiS ~= nil
     local hasElvUISmallerMap = hasElvUI and elvuiE.global and elvuiE.global.general and elvuiE.global.general.smallerWorldMap
     MMMFilterDropdown:ClearAllPoints()
