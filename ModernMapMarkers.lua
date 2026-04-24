@@ -827,6 +827,7 @@ local function UpdateMarkers()
     local showZeppelins    = db.showZeppelins
     local showTrams        = db.showTrams
     local showPortals      = db.showPortals
+    local showPvP          = db.showPvP
     local transportFaction = db.transportFaction
     local portalFaction    = db.portalFaction
 
@@ -837,6 +838,7 @@ local function UpdateMarkers()
     local texBoat      = TEXTURES.boat
     local texTram      = TEXTURES.tram
     local texPortal    = TEXTURES.portal
+    local texPvp       = TEXTURES.pvp
 
     -- Entry fields (flat format):
     --   [1]=zoneName [2]=x [3]=y [4]=name [5]=kind [6]=info [7]=atlasID [8]=slot8
@@ -881,10 +883,16 @@ local function UpdateMarkers()
                 shouldDisplay = (info == portalFaction) or (info == "Neutral")
             end
             texture = texPortal
+        elseif kind == "pvp" then
+            shouldDisplay = showPvP
+            if shouldDisplay and transportFaction ~= "all" then
+                shouldDisplay = (info == transportFaction) or (info == "Neutral")
+            end
+            texture = texPvp
         end
 
         if shouldDisplay then
-            local size = (kind == "boat" or kind == "zepp" or kind == "tram" or kind == "portal")
+            local size = (kind == "boat" or kind == "zepp" or kind == "tram" or kind == "portal" or kind == "pvp")
                 and MARKER_SIZE_SMALL or MARKER_SIZE_LARGE
             local pin = CreateMapPin(
                 data[2] * mapWidth, data[3] * mapHeight,
@@ -958,6 +966,7 @@ local DEFAULTS = {
     showZeppelins      = true,
     showTrams          = true,
     showPortals        = true,
+    showPvP            = true,
     transportFaction   = "all",
     portalFaction      = "all",
     showTransportHints = true,
