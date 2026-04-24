@@ -161,7 +161,7 @@ MMM_DefaultPoints = {
     {"Wetlands", 0.051, 0.634, "Boat to Theramore Isle", "boat", "Alliance", nil, "Dustwallow"},
     {"Wetlands", 0.047, 0.570, "Boat to Auberdine", "boat", "Alliance", nil, "Darkshore"},
 	{"Wetlands", 0.135, 0.543, "Boat to Southshore", "boat", "Alliance", nil, "Hilsbrad"},
-	{"Hilsbrad", 0.509, 0.623, "Boat to Menethil Harbour", "boat", "Alliance", nil, "Wetlands"},
+	{"Hilsbrad", 0.513, 0.653, "Boat to Menethil Harbour", "boat", "Alliance", nil, "Wetlands"},
     {"Stranglethorn", 0.257, 0.73, "Boat to Ratchet", "boat", "Neutral", nil, "Barrens"},
     {"Tirisfal", 0.606, 0.583, "Zeppelins to Orgrimmar & Grom'Gol", "zepp", "Horde", nil, {"Ogrimmar", "Stranglethorn"}},
     {"Stranglethorn", 0.312, 0.298, "Zeppelins to Tirisfal Glades & Orgrimmar", "zepp", "Horde", nil, {"Tirisfal", "Ogrimmar"}},
