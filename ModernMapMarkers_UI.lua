@@ -691,8 +691,8 @@ local elvuiSkinPanelDone     = false
 local function ElvUI_SkinDropdowns()
     if elvuiSkinDropdownsDone then return end
     if not elvuiS then return end
-    if MMMFilterDropdown then elvuiS:HandleDropDownBox(MMMFilterDropdown, 120) end
-    if MMMFindDropdown   then elvuiS:HandleDropDownBox(MMMFindDropdown,   120) end
+    if MMMFilterDropdown then elvuiS:HandleDropDownBox(MMMFilterDropdown, 134) end
+    if MMMFindDropdown   then elvuiS:HandleDropDownBox(MMMFindDropdown,   134) end
     elvuiSkinDropdownsDone = true
 end
 
