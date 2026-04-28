@@ -817,7 +817,7 @@ local function PositionDropdowns()
         MMMFindDropdown:SetScale(1)
         if findPanel then findPanel:SetScale(1) end
         if hasPfQuest then
-            MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", 2, -79 - pfQuestOffset)
+            MMMFilterDropdown:SetPoint("TOPRIGHT", pfQuestMapDropdown, "BOTTOMRIGHT", 0, -2)
         elseif (hasMapster and hasQuestie) or hasWDM then
             MMMFilterDropdown:SetPoint("TOPRIGHT", WorldMapPositioningGuide, "TOPRIGHT", 2, -111)
         elseif hasMapster then
