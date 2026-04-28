@@ -36,9 +36,10 @@ Download as ZIP, extract to Interface\Addons and rename the folder to **ModernMa
 
 ## 📸 **Screenshots**
 
-<img width="892" height="592" alt="{B50E5C91-DC94-4FFC-8848-FBE5E7517322}" src="https://github.com/user-attachments/assets/023d97c0-69bd-432f-b86e-95d5c37b8715" />
+<img width="1233" height="917" alt="{B5B9134B-82C2-4AFA-8845-41CD9971D7D5}" src="https://github.com/user-attachments/assets/0cd0ad60-6b53-430a-b8be-a63ba3a6a299" />
 
-<img width="491" height="689" alt="{6EFC66B8-7777-4F03-B385-4D018A4780A0}" src="https://github.com/user-attachments/assets/38147fa6-2214-4f30-bf37-2a7498aeaee0" />
+<img width="1257" height="909" alt="{A4CCDE1A-18A3-430B-A9E8-4292740C2B46}" src="https://github.com/user-attachments/assets/84620659-2f71-463b-8ddd-d57ce2fc7004" />
 
+<img width="1217" height="865" alt="{02ABEC20-645F-451C-A429-D2F6736052C8}" src="https://github.com/user-attachments/assets/c0c62303-e2a1-43b6-b1cc-16eb056f636c" />
 
-
+<img width="751" height="484" alt="{AA0E780E-C159-4653-B705-E86690684DDF}" src="https://github.com/user-attachments/assets/853decdb-5359-4fd1-8962-4dcfa4154ba5" />
