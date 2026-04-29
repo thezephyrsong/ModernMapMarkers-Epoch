@@ -1,4 +1,4 @@
--- ModernMapMarkers.lua (WotLK 3.3.5a)
+-- ModernMapMarkers.lua (Project Epoch 3.3.5a)
 -- Core logic: point index, marker pool, rendering, event handling.
 -- UI (dropdowns, labels) is in ModernMapMarkers_UI.lua.
 -- Marker data is defined in MarkerData.lua as MMM_MarkerData / MMM_MarkerData_WDM.
@@ -20,14 +20,14 @@ local MAX_POOL_SIZE           = 50
 local INVALID_ZONE            = 0
 
 local TEXTURES = {
-    dungeon   = "Interface\\Addons\\ModernMapMarkers\\Textures\\dungeon.tga",
-    raid      = "Interface\\Addons\\ModernMapMarkers\\Textures\\raid.tga",
-    worldboss = "Interface\\Addons\\ModernMapMarkers\\Textures\\worldboss.tga",
-    zepp      = "Interface\\Addons\\ModernMapMarkers\\Textures\\zepp.tga",
-    boat      = "Interface\\Addons\\ModernMapMarkers\\Textures\\boat.tga",
-    tram      = "Interface\\Addons\\ModernMapMarkers\\Textures\\tram.tga",
-    portal    = "Interface\\Addons\\ModernMapMarkers\\Textures\\portal.tga",
-    pvp       = "Interface\\Addons\\ModernMapMarkers\\Textures\\pvp.tga",
+    dungeon   = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\dungeon.tga",
+    raid      = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\raid.tga",
+    worldboss = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\worldboss.tga",
+    zepp      = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\zepp.tga",
+    boat      = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\boat.tga",
+    tram      = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\tram.tga",
+    portal    = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\portal.tga",
+    pvp       = "Interface\\Addons\\ModernMapMarkers-Epoch\\Textures\\pvp.tga",
     flightpath = "Interface\\TaxiFrame\\UI-Taxi-Icon-Highlight",
 }
 
@@ -1139,7 +1139,7 @@ frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 frame:SetScript("OnEvent", function()
-    if event == "ADDON_LOADED" and arg1 == "ModernMapMarkers" then
+    if event == "ADDON_LOADED" and arg1 == "ModernMapMarkers-Epoch" then
         BuildPointIndex()
         this:UnregisterEvent("ADDON_LOADED")
 
